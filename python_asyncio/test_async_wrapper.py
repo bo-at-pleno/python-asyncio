@@ -1,4 +1,5 @@
 import asyncio
+import os
 import random
 import time
 from functools import partial, wraps
@@ -25,6 +26,9 @@ def async_wrap(func: Callable) -> Callable:
 
 @async_wrap
 def slow_hello():
+    import threading
+    print("wrapped hello:" + threading.current_thread().name +
+          " ///" + str(threading.get_ident()) + "/// pid: " + str(os.getpid()))
     print("slow hello")
     random_delay = random.randint(1, 5)
     time.sleep(random_delay)
@@ -32,9 +36,13 @@ def slow_hello():
 
 
 async def hello():
+    import threading
+    print("async hello: " + threading.current_thread().name +
+          " ///" + str(threading.get_ident()) + "/// pid: " + str(os.getpid()))
     print("Hello")
     await asyncio.sleep(1)
     print("World")
+
 
 async def main():
     await asyncio.gather(hello(), slow_hello(), slow_hello(), slow_hello())
