@@ -1,10 +1,12 @@
 import asyncio
+import logging
 import os
 import random
 import time
 from functools import partial, wraps
 from typing import Callable
 
+logging.basicConfig()
 
 def async_wrap(func: Callable) -> Callable:
     """Wrap a function to be called asynchronously.
@@ -27,21 +29,21 @@ def async_wrap(func: Callable) -> Callable:
 @async_wrap
 def slow_hello():
     import threading
-    print("wrapped hello:" + threading.current_thread().name +
-          " ///" + str(threading.get_ident()) + "/// pid: " + str(os.getpid()))
-    print("slow hello")
+    logging.info("wrapped hello:" + threading.current_thread().name +
+                 " ///" + str(threading.get_ident()) + "/// pid: " + str(os.getpid()))
+    logging.info("slow hello")
     random_delay = random.randint(1, 5)
     time.sleep(random_delay)
-    print("slow world")
+    logging.info("slow world")
 
 
 async def hello():
     import threading
-    print("async hello: " + threading.current_thread().name +
-          " ///" + str(threading.get_ident()) + "/// pid: " + str(os.getpid()))
-    print("Hello")
+    logging.info("async hello: " + threading.current_thread().name +
+                 " ///" + str(threading.get_ident()) + "/// pid: " + str(os.getpid()))
+    logging.info("Hello")
     await asyncio.sleep(1)
-    print("World")
+    logging.info("World")
 
 
 async def main():

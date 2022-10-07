@@ -20,7 +20,8 @@ class Container:
 
     @staticmethod
     def _run(param, **kwargs):
-        print("hello world, param: {}, kwargs: {}".format(param, kwargs))
+        logging.info(
+            "hello world, param: {}, kwargs: {}".format(param, kwargs))
 
 
 def main():

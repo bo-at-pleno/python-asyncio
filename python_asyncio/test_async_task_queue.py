@@ -1,40 +1,43 @@
 import asyncio
+import logging
 import random
 import time
 from typing import Coroutine
+
+logging.basicConfig()
 
 
 def make_random_async_task(id: int) -> Coroutine:
     random_delay = random.randint(2, 8)
 
     async def async_task():
-        print("task start ({})".format(id))
+        logging.info("task start ({})".format(id))
         await asyncio.sleep(random_delay)
-        print("task complete!({})".format(id))
+        logging.info("task complete!({})".format(id))
         return "task {} result, random wait was {}".format(id, random_delay)
 
     return async_task
 
 
 async def executor(input_queue, output_queue):
-    print("Starting executor")
+    logging.info("Starting executor")
     while True:
         task = await input_queue.get()
         if task is None:
-            print("Got none, shutting down executor")
+            logging.info("Got none, shutting down executor")
             output_queue.put_nowait(None)
             break
 
-        print("Executing {}".format(task))
+        logging.info("Executing {}".format(task))
         # execute async task
         task_res = await task()
         output_queue.put_nowait(task_res)
 
 
 async def main(input_queue, output_queue):
-    print("In main, kicking off executor and consumer")
+    logging.info("In main, kicking off executor and consumer")
     for i in range(5):
-        print("adding task {} to input queue...".format(i))
+        logging.info("adding task {} to input queue...".format(i))
         input_queue.put_nowait(make_random_async_task(i))
 
     # poison pill
@@ -45,15 +48,15 @@ async def main(input_queue, output_queue):
 
 
 async def result_consumer(output_queue: asyncio.Queue):
-    print("Starting Result consumer")
+    logging.info("Starting Result consumer")
     while True:
         task_res = await output_queue.get()
 
         if task_res is None:
-            print("Got None, shutting down consumer")
+            logging.info("Got None, shutting down consumer")
             break
 
-        print("result: {}".format(task_res))
+        logging.info("result: {}".format(task_res))
 
 if __name__ == '__main__':
     loop = asyncio.get_event_loop()

@@ -3,7 +3,7 @@ import asyncio
 
 async def hello():
     while True:
-        print("Hello")
+        logging.info("Hello")
         await asyncio.sleep(10)
 
 
@@ -16,17 +16,18 @@ async def main():
 async def producer(queue):
     i = 0
     while True:
-        print("Producing {}".format(i))
+        logging.info("Producing {}".format(i))
         queue.put_nowait(i)
         await asyncio.sleep(1)
         i += 1
         if i == 5:
             raise Exception("I'm done")
+
 
 async def producer(queue):
     i = 0
     while True:
-        print("Producing {}".format(i))
+        logging.info("Producing {}".format(i))
         queue.put_nowait(i)
         await asyncio.sleep(1)
         i += 1
@@ -34,10 +35,9 @@ async def producer(queue):
             raise Exception("I'm done")
 
 
-
 async def consumer(queue):
     while True:
-        print("Consuming {}".format(await queue.get()))
+        logging.info("Consuming {}".format(await queue.get()))
         await asyncio.sleep(1)
 
 if __name__ == '__main__':
