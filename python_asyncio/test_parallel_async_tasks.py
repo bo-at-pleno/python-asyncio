@@ -1,6 +1,6 @@
 import asyncio
 import logging
-from typing import Coroutine
+from typing import Callable, Coroutine
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -28,8 +28,8 @@ class Device:
             await asyncio.sleep(self.polling_interval)
             logging.info(f"{self.name} tick - {thread_and_pid_str()}")
 
-    def get_async_task(self) -> Coroutine:
-        async def slow_async_task():
+    def get_async_task(self) -> Callable[[], Coroutine]:
+        async def slow_async_task() -> bool:
             logging.info("Launching slow task, device name: " +
                          self.name + " - " + thread_and_pid_str())
             await asyncio.sleep(5)
